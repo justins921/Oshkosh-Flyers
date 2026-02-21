@@ -1,49 +1,101 @@
 <%- include('partials/header') %>
 
+<!-- Hero -->
 <section class="hero">
-  <div class="hero-overlay"></div>
+  <div class="hero-bg">
+    <div class="hero-shape hero-shape-1"></div>
+    <div class="hero-shape hero-shape-2"></div>
+    <div class="hero-shape hero-shape-3"></div>
+    <div class="hero-lines"></div>
+  </div>
   <div class="container hero-content">
-    <h1><%= home.heroTitle %></h1>
+    <div class="hero-badge reveal">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      <%= home.achievements %>
+    </div>
+    <h1 class="hero-title"><%= home.heroTitle %></h1>
     <p class="hero-subtitle"><%= home.heroSubtitle %></p>
     <div class="hero-actions">
       <% if (home.registrationOpen) { %>
-        <a href="/registration" class="btn btn-primary btn-lg">Register Now</a>
+        <a href="/registration" class="btn btn-primary btn-lg">
+          Register for 2026 Season
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       <% } %>
       <a href="/about" class="btn btn-outline btn-lg">Learn More</a>
     </div>
+    <div class="hero-league">
+      <span>USA Football Certified</span>
+      <span class="hero-league-divider"></span>
+      <span><%= site.league || 'WAAYFL' %></span>
+    </div>
   </div>
 </section>
 
-<section class="section mission-section">
+<!-- Stats -->
+<section class="stats-section">
   <div class="container">
-    <div class="section-header">
+    <div class="stats-row reveal">
+      <div class="stat-box">
+        <span class="stat-number">4</span>
+        <span class="stat-label">Grade Levels</span>
+        <span class="stat-detail">5th - 8th</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Certified Coaches</span>
+        <span class="stat-detail">USA Football</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-number">2022</span>
+        <span class="stat-label">Division Champs</span>
+        <span class="stat-detail">GLIFC Southern</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-number">WAAYFL</span>
+        <span class="stat-label">League</span>
+        <span class="stat-detail">Full Contact</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Who We Are</span>
       <h2>Our Mission</h2>
       <div class="section-divider"></div>
     </div>
-    <p class="mission-text"><%= home.mission %></p>
-    <% if (home.achievements) { %>
-      <div class="achievement-badge">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        <span><%= home.achievements %></span>
+    <div class="mission-block reveal">
+      <div class="mission-icon">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       </div>
-    <% } %>
+      <blockquote class="mission-text">"<%= home.mission %>"</blockquote>
+    </div>
   </div>
 </section>
 
+<!-- Announcements -->
 <% if (announcements && announcements.items && announcements.items.length > 0) { %>
-<section class="section announcements-section">
+<section class="section bg-light">
   <div class="container">
-    <div class="section-header">
-      <h2>Latest News</h2>
+    <div class="section-header reveal">
+      <span class="section-tag">Stay Updated</span>
+      <h2>Latest News & Announcements</h2>
       <div class="section-divider"></div>
     </div>
     <div class="announcements-grid">
-      <% announcements.items.slice(0, 4).forEach(function(item) { %>
-        <div class="announcement-card<%= item.pinned ? ' pinned' : '' %>">
+      <% announcements.items.slice(0, 4).forEach(function(item, i) { %>
+        <div class="announcement-card reveal" style="transition-delay: <%= i * 0.1 %>s">
           <% if (item.pinned) { %>
-            <span class="pin-badge">Pinned</span>
+            <div class="pin-badge">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Pinned
+            </div>
           <% } %>
-          <div class="announcement-date"><%= new Date(item.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></div>
+          <div class="announcement-date"><%= new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></div>
           <h3><%= item.title %></h3>
           <p><%= item.content %></p>
         </div>
@@ -53,39 +105,76 @@
 </section>
 <% } %>
 
-<section class="section features-section">
+<!-- Features -->
+<section class="section">
   <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Why Choose Us</span>
+      <h2>The Flyers Difference</h2>
+      <div class="section-divider"></div>
+    </div>
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card reveal">
+        <div class="feature-accent"></div>
         <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <h3>USA Football Certified</h3>
-        <p>All our coaches are certified by USA Football, ensuring safe and effective training.</p>
+        <p>Every coach is certified through USA Football's coaching education program, ensuring the safest and most effective training.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal" style="transition-delay: 0.1s">
+        <div class="feature-accent accent-gold"></div>
         <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         </div>
-        <h3>Teamwork First</h3>
-        <p>Building character through teamwork, dedication, and good sportsmanship.</p>
+        <h3>Character Building</h3>
+        <p>We promote sportsmanship, teamwork, and good citizenship through dedication and self-discipline on and off the field.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal" style="transition-delay: 0.2s">
+        <div class="feature-accent accent-red"></div>
         <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <h3>Player Development</h3>
-        <p>Focused on core fundamentals and safe techniques for every athlete.</p>
+        <h3>Competitive Play</h3>
+        <p>Full-contact football competing in the WAAYFL. Teams for 5th, 6th, 7th, and 8th graders with dedicated coaching staff.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Volunteer -->
+<% if (home.volunteerNote) { %>
+<section class="section bg-light">
+  <div class="container">
+    <div class="volunteer-card reveal">
+      <div class="volunteer-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+      </div>
+      <div class="volunteer-content">
+        <h3>Volunteer With Us</h3>
+        <p><%= home.volunteerNote %></p>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- CTA -->
 <section class="section cta-section">
-  <div class="container cta-content">
+  <div class="cta-bg">
+    <div class="cta-stripe cta-stripe-1"></div>
+    <div class="cta-stripe cta-stripe-2"></div>
+  </div>
+  <div class="container cta-content reveal">
     <h2>Ready to Join the Flyers?</h2>
-    <p>Registration for the upcoming season is open. Give your child an unforgettable football experience.</p>
-    <a href="/registration" class="btn btn-primary btn-lg">Sign Up Today</a>
+    <p>Registration for the 2026 season is open. Give your child an experience they'll remember forever.</p>
+    <div class="cta-actions">
+      <a href="/registration" class="btn btn-gold btn-lg">
+        Register Today
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="/contact" class="btn btn-outline btn-lg">Contact Us</a>
+    </div>
   </div>
 </section>
 

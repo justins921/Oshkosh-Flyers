@@ -1,13 +1,45 @@
 {
   "address": "275 N. Eagle Street, Oshkosh, WI 54904",
-  "mailingAddress": "PO Box 3092, Oshkosh, WI 54902",
+  "mailingAddress": "PO Box 3092, Oshkosh, WI 54903",
   "email": "oshkoshflyers@gmail.com",
-  "phone": "",
+  "presidentEmail": "offc.president@gmail.com",
+  "fundraisingEmail": "offcfundraising@gmail.com",
+  "phone": "(920) 379-6302",
   "boardMembers": [
     {
       "name": "Brent Thompson",
       "role": "President",
+      "email": "offc.president@gmail.com"
+    },
+    {
+      "name": "Nate Kramer",
+      "role": "Vice President",
       "email": ""
+    },
+    {
+      "name": "Jenny Byes",
+      "role": "Treasurer",
+      "email": ""
+    },
+    {
+      "name": "Beth Thompson",
+      "role": "Secretary",
+      "email": ""
+    },
+    {
+      "name": "Nicole Fuetz",
+      "role": "Co-Chair of Fundraising",
+      "email": "offcfundraising@gmail.com"
+    },
+    {
+      "name": "Elizabeth Chase",
+      "role": "Co-Chair of Fundraising",
+      "email": "offcfundraising@gmail.com"
+    },
+    {
+      "name": "Open Position",
+      "role": "Equipment Manager",
+      "email": "oshkoshflyers@gmail.com"
     }
   ]
 }

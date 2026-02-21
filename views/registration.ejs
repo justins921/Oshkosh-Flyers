@@ -1,41 +1,46 @@
-<%- include('partials/header') %>
 <% var pageTitle = 'Registration'; %>
+<%- include('partials/header') %>
 
 <section class="page-hero">
-  <div class="container">
+  <div class="page-hero-bg"></div>
+  <div class="container page-hero-content">
+    <span class="page-hero-tag"><%= registration.season %> Season</span>
     <h1>Registration</h1>
-    <p><%= registration.season %> Season</p>
+    <p>Join the Oshkosh Flyers Football Club.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
     <% if (registration.isOpen) { %>
-      <div class="info-banner info-success">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p><strong>Registration is OPEN</strong> for the <%= registration.season %> season!</p>
+      <div class="info-banner info-success reveal">
+        <div class="info-banner-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <strong>Registration is OPEN for the <%= registration.season %> Season!</strong>
+          <p>Sign up your athlete today to join the Flyers.</p>
+        </div>
       </div>
     <% } else { %>
-      <div class="info-banner">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div class="info-banner reveal">
+        <div class="info-banner-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
         <p>Registration for the <%= registration.season %> season is currently closed. Check back soon!</p>
       </div>
     <% } %>
 
     <div class="registration-content">
-      <div class="reg-main">
-        <div class="content-block">
-          <h2>Join the Flyers</h2>
-          <p class="body-text"><%= registration.description %></p>
-        </div>
-
+      <div class="reg-main reveal">
+        <h2>Join the Flyers</h2>
+        <p class="body-text"><%= registration.description %></p>
         <% if (registration.requirements) { %>
-          <div class="content-block">
+          <div class="reg-requirements">
             <h3>Requirements</h3>
             <p class="body-text"><%= registration.requirements %></p>
           </div>
         <% } %>
-
         <% if (registration.isOpen && registration.registrationUrl) { %>
           <div class="reg-cta">
             <a href="<%= registration.registrationUrl %>" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
@@ -46,31 +51,22 @@
         <% } %>
       </div>
 
-      <div class="reg-sidebar">
+      <div class="reg-sidebar reveal" style="transition-delay: 0.15s">
         <div class="reg-info-card">
           <h3>Quick Facts</h3>
           <dl class="info-list">
-            <dt>Season</dt>
-            <dd><%= registration.season %></dd>
-
-            <% if (registration.fee) { %>
-              <dt>Fee</dt>
-              <dd><%= registration.fee %></dd>
-            <% } %>
-
-            <% if (registration.deadline) { %>
-              <dt>Deadline</dt>
-              <dd><%= registration.deadline %></dd>
-            <% } %>
-
-            <% if (registration.ageGroups) { %>
-              <dt>Age Groups</dt>
-              <dd><%= registration.ageGroups %></dd>
-            <% } %>
-
-            <dt>Status</dt>
-            <dd><span class="status-badge <%= registration.isOpen ? 'status-open' : 'status-closed' %>"><%= registration.isOpen ? 'Open' : 'Closed' %></span></dd>
+            <div class="info-list-item"><dt>Season</dt><dd><%= registration.season %></dd></div>
+            <div class="info-list-item"><dt>Game Type</dt><dd><%= registration.gameType || 'Full Contact' %></dd></div>
+            <% if (registration.fee) { %><div class="info-list-item"><dt>Fee</dt><dd><%= registration.fee %></dd></div><% } %>
+            <% if (registration.deadline) { %><div class="info-list-item"><dt>Deadline</dt><dd><%= registration.deadline %></dd></div><% } %>
+            <% if (registration.ageGroups) { %><div class="info-list-item"><dt>Age Groups</dt><dd><%= registration.ageGroups %></dd></div><% } %>
+            <div class="info-list-item"><dt>Status</dt><dd><span class="status-badge <%= registration.isOpen ? 'status-open' : 'status-closed' %>"><%= registration.isOpen ? 'Open' : 'Closed' %></span></dd></div>
           </dl>
+        </div>
+        <div class="reg-contact-card">
+          <h4>Questions?</h4>
+          <p>Contact us for more information about registration.</p>
+          <a href="/contact" class="btn btn-secondary btn-sm">Contact Us</a>
         </div>
       </div>
     </div>

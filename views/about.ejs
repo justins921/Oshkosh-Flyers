@@ -1,67 +1,109 @@
-<%- include('partials/header') %>
 <% var pageTitle = 'About Us'; %>
+<%- include('partials/header') %>
 
 <section class="page-hero">
-  <div class="container">
-    <h1>About the Flyers</h1>
-    <p>Learn about our organization, mission, and the people who make it happen.</p>
+  <div class="page-hero-bg"></div>
+  <div class="container page-hero-content">
+    <span class="page-hero-tag">About Us</span>
+    <h1>Meet the Flyers</h1>
+    <p>A youth football program built on character, competition, and community.</p>
   </div>
 </section>
 
+<!-- Story -->
 <section class="section">
   <div class="container">
-    <div class="content-block">
-      <div class="section-header">
-        <h2>Our Story</h2>
-        <div class="section-divider"></div>
+    <div class="two-col-layout">
+      <div class="col-text reveal">
+        <span class="section-tag">Our Story</span>
+        <h2>About Oshkosh Flyers Football</h2>
+        <div class="section-divider section-divider-left"></div>
+        <p class="body-text"><%= about.history %></p>
+        <% if (about.usaFootballNote) { %>
+          <div class="inline-highlight">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <p><%= about.usaFootballNote %></p>
+          </div>
+        <% } %>
       </div>
-      <p class="body-text"><%= about.history %></p>
+      <div class="col-side reveal" style="transition-delay: 0.15s">
+        <div class="side-card">
+          <div class="side-card-header">Quick Facts</div>
+          <dl class="quick-facts">
+            <div class="fact-row">
+              <dt>Grades</dt>
+              <dd>5th - 8th</dd>
+            </div>
+            <div class="fact-row">
+              <dt>League</dt>
+              <dd>WAAYFL</dd>
+            </div>
+            <div class="fact-row">
+              <dt>Game Type</dt>
+              <dd>Full Contact</dd>
+            </div>
+            <div class="fact-row">
+              <dt>Location</dt>
+              <dd>Oshkosh, WI</dd>
+            </div>
+          </dl>
+          <div class="achievement-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>2022 GLIFC Southern Division Champions</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="section bg-light">
+<!-- Mission & Values -->
+<section class="section bg-dark">
   <div class="container">
-    <div class="content-block">
-      <div class="section-header">
-        <h2>Our Mission</h2>
-        <div class="section-divider"></div>
-      </div>
-      <blockquote class="mission-quote">
-        "<%= about.missionStatement %>"
-      </blockquote>
-    </div>
-  </div>
-</section>
-
-<% if (about.values) { %>
-<section class="section">
-  <div class="container">
-    <div class="section-header">
-      <h2>Our Values</h2>
+    <div class="section-header section-header-light reveal">
+      <span class="section-tag">What We Stand For</span>
+      <h2>Our Mission & Values</h2>
       <div class="section-divider"></div>
     </div>
+    <blockquote class="mission-quote reveal">"<%= about.missionStatement %>"</blockquote>
+    <% if (about.values) { %>
     <div class="values-grid">
-      <% about.values.split(',').forEach(function(value) { %>
-        <div class="value-card">
-          <h3><%= value.trim() %></h3>
+      <% about.values.split(',').forEach(function(value, i) { %>
+        <div class="value-card reveal" style="transition-delay: <%= i * 0.08 %>s">
+          <div class="value-icon">
+            <% var v = value.trim(); %>
+            <% if (v === 'Safety') { %>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <% } else if (v === 'Sportsmanship') { %>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/></svg>
+            <% } else if (v === 'Teamwork') { %>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <% } else if (v === 'Character Development') { %>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <% } else { %>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <% } %>
+          </div>
+          <h3><%= v %></h3>
         </div>
       <% }); %>
     </div>
+    <% } %>
   </div>
 </section>
-<% } %>
 
+<!-- Coaches -->
 <% if (about.coaches && about.coaches.length > 0) { %>
-<section class="section bg-light">
+<section class="section">
   <div class="container">
-    <div class="section-header">
-      <h2>Leadership</h2>
+    <div class="section-header reveal">
+      <span class="section-tag">Our Team</span>
+      <h2>Head Coaches</h2>
       <div class="section-divider"></div>
     </div>
     <div class="coaches-grid">
-      <% about.coaches.forEach(function(coach) { %>
-        <div class="coach-card">
+      <% about.coaches.forEach(function(coach, i) { %>
+        <div class="coach-card reveal" style="transition-delay: <%= i * 0.1 %>s">
           <div class="coach-avatar"><%= coach.name.charAt(0) %></div>
           <h3><%= coach.name %></h3>
           <% if (coach.role) { %><p class="coach-role"><%= coach.role %></p><% } %>
@@ -69,6 +111,9 @@
         </div>
       <% }); %>
     </div>
+    <% if (about.votingNote) { %>
+    <p class="text-center text-muted mt-32 reveal"><em><%= about.votingNote %></em></p>
+    <% } %>
   </div>
 </section>
 <% } %>

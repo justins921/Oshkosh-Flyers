@@ -1,12 +1,29 @@
 {
-  "history": "The Oshkosh Flyers Football Club is a youth football organization based in Oshkosh, Wisconsin. We are dedicated to developing young athletes through the sport of football, teaching them valuable life lessons about teamwork, dedication, and sportsmanship.",
+  "history": "The Oshkosh Flyers Football Club is a competitive youth football program based in Oshkosh, Wisconsin. We offer full-contact football for 5th, 6th, 7th, and 8th graders, competing in the WAAYFL (Wisconsin Area Association Youth Football League). Our organization is built on the belief that youth sports can be a powerful vehicle for developing character, discipline, and lifelong skills.",
   "missionStatement": "To promote sportsmanship, teamwork, and good citizenship. Focusing on core fundamentals and safe techniques through dedication and self discipline.",
   "values": "Safety, Sportsmanship, Teamwork, Character Development, Fun",
+  "usaFootballNote": "All coaches are certified by USA Football, ensuring the safest and most effective training methods for every player.",
+  "votingNote": "Oshkosh Flyers Football voting members consist of Board Members and Head Coaches.",
   "coaches": [
     {
-      "name": "Brent Thompson",
-      "role": "President",
-      "bio": "Leading the Oshkosh Flyers organization with dedication to youth development."
+      "name": "Mike Byes",
+      "role": "Head Coach - 8th Grade",
+      "bio": ""
+    },
+    {
+      "name": "Greg Litvinskas",
+      "role": "Head Coach - 7th Grade",
+      "bio": ""
+    },
+    {
+      "name": "Troy Schoblaske",
+      "role": "Head Coach - 6th Grade",
+      "bio": ""
+    },
+    {
+      "name": "Open Position",
+      "role": "Head Coach - 5th Grade",
+      "bio": "Interested in coaching? Contact us!"
     }
   ]
 }

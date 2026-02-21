@@ -1,6 +1,6 @@
 {
-  "note": "Practices and game schedules are subject to changes as the season progresses. Check back regularly for updates.",
-  "equipmentPickup": "3534 Omro Rd, Oshkosh, WI",
+  "note": "Practice calendar and game schedules are subject to changes as the season progresses. Practices will end earlier due to loss of daylight.",
+  "equipmentPickup": "3534 Omro Rd (Algoma Storage), Oshkosh, WI",
   "events": [
     {
       "id": "1",
@@ -8,26 +8,35 @@
       "date": "2026-02-01",
       "time": "",
       "location": "Online",
-      "description": "Registration for the 2026 season is now open!",
+      "description": "Registration for the 2026 season is now open! Visit the registration page to sign up.",
       "type": "registration"
     },
     {
       "id": "2",
-      "title": "Equipment Pick-Up",
-      "date": "2026-07-15",
-      "time": "9:00 AM - 12:00 PM",
-      "location": "3534 Omro Rd, Oshkosh, WI",
-      "description": "Pick up your equipment for the upcoming season.",
+      "title": "Equipment Pick-Up Day",
+      "date": "2026-07-13",
+      "time": "8th Grade: 4:00-4:30 PM | 7th Grade: 4:30-5:00 PM | 6th Grade: 5:00-5:30 PM | 5th Grade: 5:30-6:00 PM",
+      "location": "3534 Omro Rd (Algoma Storage), Oshkosh, WI",
+      "description": "Staggered pick-up times by grade level. Make sure registration is complete before pick-up.",
       "type": "event"
     },
     {
       "id": "3",
       "title": "First Day of Practice",
-      "date": "2026-08-03",
+      "date": "2026-08-05",
       "time": "5:30 PM",
       "location": "TBD",
-      "description": "First practice of the 2026 season. All players must have completed registration.",
+      "description": "First practice of the 2026 season. All players must have completed registration and have equipment.",
       "type": "practice"
+    },
+    {
+      "id": "4",
+      "title": "Picture Day",
+      "date": "2026-08-25",
+      "time": "Players arrive by 4:45 PM",
+      "location": "TBD",
+      "description": "Wear blue game pants and the blue side of the jersey.",
+      "type": "event"
     }
   ]
 }

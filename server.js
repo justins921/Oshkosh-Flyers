@@ -114,6 +114,12 @@ app.get('/registration', (req, res) => {
   res.render('registration', { site, registration });
 });
 
+app.get('/sponsors', (req, res) => {
+  const site = readData('site.json');
+  const sponsors = readData('sponsors.json');
+  res.render('sponsors', { site, sponsors });
+});
+
 // ========== Admin routes ==========
 
 app.get('/admin/login', (req, res) => {
@@ -155,11 +161,17 @@ app.post('/admin/site', requireAdmin, (req, res) => {
   const site = readData('site.json');
   site.teamName = req.body.teamName || site.teamName;
   site.tagline = req.body.tagline || site.tagline;
-  site.phone = req.body.phone || site.phone;
+  site.phone = req.body.phone || '';
   site.email = req.body.email || site.email;
+  site.presidentEmail = req.body.presidentEmail || '';
+  site.fundraisingEmail = req.body.fundraisingEmail || '';
   site.address = req.body.address || site.address;
+  site.mailingAddress = req.body.mailingAddress || site.mailingAddress;
   site.facebook = req.body.facebook || '';
   site.instagram = req.body.instagram || '';
+  site.hudl = req.body.hudl || '';
+  site.league = req.body.league || '';
+  site.gradeRange = req.body.gradeRange || '';
   writeData('site.json', site);
   req.flash('success', 'Site settings updated');
   res.redirect('/admin');
@@ -338,6 +350,44 @@ app.post('/admin/registration', requireAdmin, (req, res) => {
   writeData('registration.json', registration);
   req.flash('success', 'Registration page updated');
   res.redirect('/admin');
+});
+
+// Sponsors page editing
+app.get('/admin/sponsors', requireAdmin, (req, res) => {
+  const site = readData('site.json');
+  const sponsors = readData('sponsors.json');
+  res.render('admin/edit-sponsors', { site, sponsors });
+});
+
+app.post('/admin/sponsors', requireAdmin, (req, res) => {
+  const sponsors = readData('sponsors.json');
+  sponsors.headline = req.body.headline || sponsors.headline;
+  sponsors.description = req.body.description || sponsors.description;
+  sponsors.becomeASponsor = req.body.becomeASponsor || sponsors.becomeASponsor;
+  writeData('sponsors.json', sponsors);
+  req.flash('success', 'Sponsors page updated');
+  res.redirect('/admin/sponsors');
+});
+
+app.post('/admin/sponsors/add', requireAdmin, upload.single('logo'), (req, res) => {
+  const sponsors = readData('sponsors.json');
+  sponsors.sponsors.push({
+    id: Date.now().toString(),
+    name: req.body.name,
+    url: req.body.url || '',
+    logo: req.file ? '/images/' + req.file.filename : ''
+  });
+  writeData('sponsors.json', sponsors);
+  req.flash('success', 'Sponsor added');
+  res.redirect('/admin/sponsors');
+});
+
+app.post('/admin/sponsors/delete/:id', requireAdmin, (req, res) => {
+  const sponsors = readData('sponsors.json');
+  sponsors.sponsors = sponsors.sponsors.filter(s => s.id !== req.params.id);
+  writeData('sponsors.json', sponsors);
+  req.flash('success', 'Sponsor removed');
+  res.redirect('/admin/sponsors');
 });
 
 // Change admin password

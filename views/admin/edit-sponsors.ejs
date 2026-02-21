@@ -1,0 +1,76 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Manage Sponsors</h1>
+      <p>Add sponsor logos and manage the sponsors page</p>
+    </div>
+
+    <div class="admin-card">
+      <h2>Page Content</h2>
+      <form method="POST" action="/admin/sponsors">
+        <div class="form-group">
+          <label for="headline">Headline</label>
+          <input type="text" id="headline" name="headline" value="<%= sponsors.headline %>">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3"><%= sponsors.description %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="becomeASponsor">Become a Sponsor Text</label>
+          <textarea id="becomeASponsor" name="becomeASponsor" rows="2"><%= sponsors.becomeASponsor %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Page Content</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h2>Add New Sponsor</h2>
+      <form method="POST" action="/admin/sponsors/add" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Sponsor Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="url">Website URL (optional)</label>
+            <input type="url" id="url" name="url" placeholder="https://...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="logo">Logo Image (optional)</label>
+          <input type="file" id="logo" name="logo" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Add Sponsor</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h2>Current Sponsors</h2>
+      <% if (sponsors.sponsors && sponsors.sponsors.length > 0) { %>
+        <ul class="item-list">
+          <% sponsors.sponsors.forEach(function(sponsor) { %>
+            <li>
+              <div class="item-info">
+                <h4><%= sponsor.name %></h4>
+                <p><%= sponsor.url || 'No website' %></p>
+              </div>
+              <div class="item-actions">
+                <form method="POST" action="/admin/sponsors/delete/<%= sponsor.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Remove this sponsor?')">Remove</button>
+                </form>
+              </div>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p style="color: var(--text-light)">No sponsors added yet.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

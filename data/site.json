@@ -1,10 +1,15 @@
 {
   "teamName": "Oshkosh Flyers",
   "tagline": "Youth Football Club",
-  "phone": "",
+  "phone": "(920) 379-6302",
   "email": "oshkoshflyers@gmail.com",
+  "presidentEmail": "offc.president@gmail.com",
+  "fundraisingEmail": "offcfundraising@gmail.com",
   "address": "275 N. Eagle Street, Oshkosh, WI 54904",
-  "mailingAddress": "PO Box 3092, Oshkosh, WI 54902",
-  "facebook": "https://www.facebook.com/oshkoshflyers",
-  "instagram": ""
+  "mailingAddress": "PO Box 3092, Oshkosh, WI 54903",
+  "facebook": "",
+  "instagram": "",
+  "hudl": "https://fan.hudl.com/usa/wi/oshkosh/organization/10256/oshkosh-flyers",
+  "league": "WAAYFL",
+  "gradeRange": "5th - 8th Grade"
 }
