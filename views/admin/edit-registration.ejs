@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Edit Registration</h1>
+      <p>Control registration status and details</p>
+    </div>
+
+    <div class="admin-card">
+      <form method="POST" action="/admin/registration">
+        <div class="form-group">
+          <div class="form-check">
+            <input type="checkbox" id="isOpen" name="isOpen" <%= registration.isOpen ? 'checked' : '' %>>
+            <label for="isOpen">Registration is Open</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="season">Season</label>
+            <input type="text" id="season" name="season" value="<%= registration.season %>">
+          </div>
+          <div class="form-group">
+            <label for="deadline">Deadline</label>
+            <input type="text" id="deadline" name="deadline" value="<%= registration.deadline %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="registrationUrl">Registration Link URL</label>
+          <input type="text" id="registrationUrl" name="registrationUrl" value="<%= registration.registrationUrl %>">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="4"><%= registration.description %></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fee">Fee</label>
+            <input type="text" id="fee" name="fee" value="<%= registration.fee %>">
+          </div>
+          <div class="form-group">
+            <label for="ageGroups">Age Groups</label>
+            <input type="text" id="ageGroups" name="ageGroups" value="<%= registration.ageGroups %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="requirements">Requirements</label>
+          <textarea id="requirements" name="requirements" rows="3"><%= registration.requirements %></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

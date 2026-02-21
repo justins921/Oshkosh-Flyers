@@ -1,0 +1,80 @@
+<%- include('partials/header') %>
+<% var pageTitle = 'Registration'; %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Registration</h1>
+    <p><%= registration.season %> Season</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (registration.isOpen) { %>
+      <div class="info-banner info-success">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <p><strong>Registration is OPEN</strong> for the <%= registration.season %> season!</p>
+      </div>
+    <% } else { %>
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>Registration for the <%= registration.season %> season is currently closed. Check back soon!</p>
+      </div>
+    <% } %>
+
+    <div class="registration-content">
+      <div class="reg-main">
+        <div class="content-block">
+          <h2>Join the Flyers</h2>
+          <p class="body-text"><%= registration.description %></p>
+        </div>
+
+        <% if (registration.requirements) { %>
+          <div class="content-block">
+            <h3>Requirements</h3>
+            <p class="body-text"><%= registration.requirements %></p>
+          </div>
+        <% } %>
+
+        <% if (registration.isOpen && registration.registrationUrl) { %>
+          <div class="reg-cta">
+            <a href="<%= registration.registrationUrl %>" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+              Register Online
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="reg-sidebar">
+        <div class="reg-info-card">
+          <h3>Quick Facts</h3>
+          <dl class="info-list">
+            <dt>Season</dt>
+            <dd><%= registration.season %></dd>
+
+            <% if (registration.fee) { %>
+              <dt>Fee</dt>
+              <dd><%= registration.fee %></dd>
+            <% } %>
+
+            <% if (registration.deadline) { %>
+              <dt>Deadline</dt>
+              <dd><%= registration.deadline %></dd>
+            <% } %>
+
+            <% if (registration.ageGroups) { %>
+              <dt>Age Groups</dt>
+              <dd><%= registration.ageGroups %></dd>
+            <% } %>
+
+            <dt>Status</dt>
+            <dd><span class="status-badge <%= registration.isOpen ? 'status-open' : 'status-closed' %>"><%= registration.isOpen ? 'Open' : 'Closed' %></span></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

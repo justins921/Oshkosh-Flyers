@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Edit Home Page</h1>
+      <p>Hero section, mission statement, and registration toggle</p>
+    </div>
+
+    <div class="admin-card">
+      <h2>Hero Section</h2>
+      <form method="POST" action="/admin/home">
+        <div class="form-group">
+          <label for="heroTitle">Hero Title</label>
+          <input type="text" id="heroTitle" name="heroTitle" value="<%= home.heroTitle %>">
+        </div>
+        <div class="form-group">
+          <label for="heroSubtitle">Hero Subtitle</label>
+          <input type="text" id="heroSubtitle" name="heroSubtitle" value="<%= home.heroSubtitle %>">
+        </div>
+        <div class="form-group">
+          <label for="mission">Mission Statement</label>
+          <textarea id="mission" name="mission" rows="3"><%= home.mission %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="achievements">Achievements</label>
+          <input type="text" id="achievements" name="achievements" value="<%= home.achievements %>">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="registrationUrl">Registration Link URL</label>
+            <input type="text" id="registrationUrl" name="registrationUrl" value="<%= home.registrationUrl %>">
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <div class="form-check">
+              <input type="checkbox" id="registrationOpen" name="registrationOpen" <%= home.registrationOpen ? 'checked' : '' %>>
+              <label for="registrationOpen">Registration is Open</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

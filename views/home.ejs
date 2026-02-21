@@ -1,0 +1,92 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <h1><%= home.heroTitle %></h1>
+    <p class="hero-subtitle"><%= home.heroSubtitle %></p>
+    <div class="hero-actions">
+      <% if (home.registrationOpen) { %>
+        <a href="/registration" class="btn btn-primary btn-lg">Register Now</a>
+      <% } %>
+      <a href="/about" class="btn btn-outline btn-lg">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<section class="section mission-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Our Mission</h2>
+      <div class="section-divider"></div>
+    </div>
+    <p class="mission-text"><%= home.mission %></p>
+    <% if (home.achievements) { %>
+      <div class="achievement-badge">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span><%= home.achievements %></span>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<% if (announcements && announcements.items && announcements.items.length > 0) { %>
+<section class="section announcements-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Latest News</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="announcements-grid">
+      <% announcements.items.slice(0, 4).forEach(function(item) { %>
+        <div class="announcement-card<%= item.pinned ? ' pinned' : '' %>">
+          <% if (item.pinned) { %>
+            <span class="pin-badge">Pinned</span>
+          <% } %>
+          <div class="announcement-date"><%= new Date(item.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></div>
+          <h3><%= item.title %></h3>
+          <p><%= item.content %></p>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="section features-section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3>USA Football Certified</h3>
+        <p>All our coaches are certified by USA Football, ensuring safe and effective training.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </div>
+        <h3>Teamwork First</h3>
+        <p>Building character through teamwork, dedication, and good sportsmanship.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3>Player Development</h3>
+        <p>Focused on core fundamentals and safe techniques for every athlete.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="container cta-content">
+    <h2>Ready to Join the Flyers?</h2>
+    <p>Registration for the upcoming season is open. Give your child an unforgettable football experience.</p>
+    <a href="/registration" class="btn btn-primary btn-lg">Sign Up Today</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

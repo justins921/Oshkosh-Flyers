@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+<% var pageTitle = 'Team Calendar'; %>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Team Calendar</h1>
+    <p>Stay up to date with practices, games, and events.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (calendar.note) { %>
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p><%= calendar.note %></p>
+      </div>
+    <% } %>
+
+    <% if (calendar.equipmentPickup) { %>
+      <div class="info-banner info-highlight">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <p><strong>Equipment Pick-Up Location:</strong> <%= calendar.equipmentPickup %></p>
+      </div>
+    <% } %>
+
+    <div class="calendar-filters">
+      <button class="filter-btn active" data-filter="all">All Events</button>
+      <button class="filter-btn" data-filter="practice">Practice</button>
+      <button class="filter-btn" data-filter="game">Games</button>
+      <button class="filter-btn" data-filter="event">Events</button>
+      <button class="filter-btn" data-filter="registration">Registration</button>
+    </div>
+
+    <% if (calendar.events && calendar.events.length > 0) { %>
+      <div class="events-list">
+        <% calendar.events.forEach(function(event) { %>
+          <div class="event-card" data-type="<%= event.type %>">
+            <div class="event-date-block">
+              <span class="event-month"><%= new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short' }) %></span>
+              <span class="event-day"><%= new Date(event.date + 'T00:00:00').getDate() %></span>
+            </div>
+            <div class="event-details">
+              <span class="event-type-badge type-<%= event.type %>"><%= event.type %></span>
+              <h3><%= event.title %></h3>
+              <% if (event.time) { %>
+                <p class="event-meta">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <%= event.time %>
+                </p>
+              <% } %>
+              <% if (event.location) { %>
+                <p class="event-meta">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <%= event.location %>
+                </p>
+              <% } %>
+              <% if (event.description) { %>
+                <p class="event-desc"><%= event.description %></p>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <p>No events scheduled yet. Check back soon!</p>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

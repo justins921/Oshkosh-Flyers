@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Edit About Page</h1>
+      <p>Organization history, mission, values, and coaching staff</p>
+    </div>
+
+    <div class="admin-card">
+      <form method="POST" action="/admin/about">
+        <div class="form-group">
+          <label for="history">Organization History</label>
+          <textarea id="history" name="history" rows="5"><%= about.history %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="missionStatement">Mission Statement</label>
+          <textarea id="missionStatement" name="missionStatement" rows="3"><%= about.missionStatement %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="values">Core Values (comma-separated)</label>
+          <input type="text" id="values" name="values" value="<%= about.values %>">
+        </div>
+
+        <h2 style="margin-top: 32px;">Coaching Staff / Leadership</h2>
+        <div id="coaches-list">
+          <% if (about.coaches && about.coaches.length > 0) { %>
+            <% about.coaches.forEach(function(coach, i) { %>
+              <div class="repeater-block">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="coachName" value="<%= coach.name %>">
+                  </div>
+                  <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" name="coachRole" value="<%= coach.role %>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Bio</label>
+                  <textarea name="coachBio" rows="2"><%= coach.bio %></textarea>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+        <button type="button" class="add-btn" onclick="addCoach()">+ Add Coach / Leader</button>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function addCoach() {
+  const list = document.getElementById('coaches-list');
+  const block = document.createElement('div');
+  block.className = 'repeater-block';
+  block.innerHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="coachName" value="">
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" name="coachRole" value="">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Bio</label>
+      <textarea name="coachBio" rows="2"></textarea>
+    </div>
+  `;
+  list.appendChild(block);
+}
+</script>
+
+<%- include('../partials/footer') %>

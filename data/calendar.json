@@ -1,0 +1,33 @@
+{
+  "note": "Practices and game schedules are subject to changes as the season progresses. Check back regularly for updates.",
+  "equipmentPickup": "3534 Omro Rd, Oshkosh, WI",
+  "events": [
+    {
+      "id": "1",
+      "title": "2026 Season Registration Opens",
+      "date": "2026-02-01",
+      "time": "",
+      "location": "Online",
+      "description": "Registration for the 2026 season is now open!",
+      "type": "registration"
+    },
+    {
+      "id": "2",
+      "title": "Equipment Pick-Up",
+      "date": "2026-07-15",
+      "time": "9:00 AM - 12:00 PM",
+      "location": "3534 Omro Rd, Oshkosh, WI",
+      "description": "Pick up your equipment for the upcoming season.",
+      "type": "event"
+    },
+    {
+      "id": "3",
+      "title": "First Day of Practice",
+      "date": "2026-08-03",
+      "time": "5:30 PM",
+      "location": "TBD",
+      "description": "First practice of the 2026 season. All players must have completed registration.",
+      "type": "practice"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Dashboard</h1>
+      <p>Manage your Oshkosh Flyers website content</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <h3>Home Page</h3>
+        <p>Edit hero content, mission statement, and registration status.</p>
+        <a href="/admin/home">Edit Home Page &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Announcements</h3>
+        <p>Add, edit, or remove news and announcements.</p>
+        <a href="/admin/announcements">Manage Announcements &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Team Calendar</h3>
+        <p>Add practices, games, and events to the calendar.</p>
+        <a href="/admin/calendar">Manage Calendar &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>About Page</h3>
+        <p>Update organization history, mission, and coaching staff.</p>
+        <a href="/admin/about">Edit About Page &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Registration</h3>
+        <p>Control registration status, fees, and requirements.</p>
+        <a href="/admin/registration">Edit Registration &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Contact Info</h3>
+        <p>Update contact details and board members.</p>
+        <a href="/admin/contact">Edit Contact Info &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Site Settings</h3>
+        <p>Team name, tagline, social links, and global settings.</p>
+        <a href="/admin/site">Edit Site Settings &rarr;</a>
+      </div>
+      <div class="dash-card">
+        <h3>Change Password</h3>
+        <p>Update your admin login credentials.</p>
+        <a href="/admin/password">Change Password &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

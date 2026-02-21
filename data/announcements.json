@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "2026 Season Registration Now Open!",
+      "content": "Registration for the 2026 Oshkosh Flyers football season is now open. Visit our registration page to sign up your athlete today!",
+      "date": "2026-02-01",
+      "pinned": true
+    },
+    {
+      "id": "2",
+      "title": "Shop for Swag & Fan Gear",
+      "content": "Our team store will be reopening soon with new merchandise for the 2026 season. Stay tuned for updates!",
+      "date": "2026-02-15",
+      "pinned": false
+    }
+  ]
+}

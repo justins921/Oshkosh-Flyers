@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' | ' : '' %><%= site.teamName %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <% if (typeof success !== 'undefined' && success.length > 0) { %>
+    <div class="flash flash-success"><%= success[0] %></div>
+  <% } %>
+  <% if (typeof error !== 'undefined' && error.length > 0) { %>
+    <div class="flash flash-error"><%= error[0] %></div>
+  <% } %>
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">F</div>
+        <div class="brand-text">
+          <span class="brand-name"><%= site.teamName %></span>
+          <span class="brand-sub"><%= site.tagline %></span>
+        </div>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/registration" class="nav-cta">Register</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+          <li><a href="/admin" class="nav-admin">Admin</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </nav>

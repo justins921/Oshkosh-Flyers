@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Site Settings</h1>
+      <p>Global settings that appear across the website</p>
+    </div>
+
+    <div class="admin-card">
+      <form method="POST" action="/admin/site">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="teamName">Team Name</label>
+            <input type="text" id="teamName" name="teamName" value="<%= site.teamName %>">
+          </div>
+          <div class="form-group">
+            <label for="tagline">Tagline</label>
+            <input type="text" id="tagline" name="tagline" value="<%= site.tagline %>">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= site.email %>">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone" value="<%= site.phone || '' %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" value="<%= site.address %>">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="facebook">Facebook URL</label>
+            <input type="url" id="facebook" name="facebook" value="<%= site.facebook || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="instagram">Instagram URL</label>
+            <input type="url" id="instagram" name="instagram" value="<%= site.instagram || '' %>">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+          <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

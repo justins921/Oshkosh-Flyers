@@ -1,0 +1,76 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Manage Calendar</h1>
+      <p>Add and manage practices, games, and events</p>
+    </div>
+
+    <div class="admin-card">
+      <h2>Add New Event</h2>
+      <form method="POST" action="/admin/calendar/add">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Event Title</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" name="type">
+              <option value="practice">Practice</option>
+              <option value="game">Game</option>
+              <option value="event">Event</option>
+              <option value="registration">Registration</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="text" id="time" name="time" placeholder="e.g. 5:30 PM - 7:00 PM">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Event</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h2>Upcoming Events</h2>
+      <% if (calendar.events && calendar.events.length > 0) { %>
+        <ul class="item-list">
+          <% calendar.events.forEach(function(event) { %>
+            <li>
+              <div class="item-info">
+                <h4><span class="status-badge type-<%= event.type %>"><%= event.type %></span> <%= event.title %></h4>
+                <p><%= event.date %><%= event.time ? ' at ' + event.time : '' %><%= event.location ? ' - ' + event.location : '' %></p>
+              </div>
+              <div class="item-actions">
+                <form method="POST" action="/admin/calendar/delete/<%= event.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this event?')">Delete</button>
+                </form>
+              </div>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p style="color: var(--text-light)">No events scheduled.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

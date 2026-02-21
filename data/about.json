@@ -1,0 +1,12 @@
+{
+  "history": "The Oshkosh Flyers Football Club is a youth football organization based in Oshkosh, Wisconsin. We are dedicated to developing young athletes through the sport of football, teaching them valuable life lessons about teamwork, dedication, and sportsmanship.",
+  "missionStatement": "To promote sportsmanship, teamwork, and good citizenship. Focusing on core fundamentals and safe techniques through dedication and self discipline.",
+  "values": "Safety, Sportsmanship, Teamwork, Character Development, Fun",
+  "coaches": [
+    {
+      "name": "Brent Thompson",
+      "role": "President",
+      "bio": "Leading the Oshkosh Flyers organization with dedication to youth development."
+    }
+  ]
+}
