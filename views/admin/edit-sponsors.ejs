@@ -29,7 +29,7 @@
 
     <div class="admin-card">
       <h2>Add New Sponsor</h2>
-      <form method="POST" action="/admin/sponsors/add" enctype="multipart/form-data">
+      <form method="POST" action="/admin/sponsors/add">
         <div class="form-row">
           <div class="form-group">
             <label for="name">Sponsor Name</label>
@@ -41,8 +41,9 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="logo">Logo Image (optional)</label>
-          <input type="file" id="logo" name="logo" accept="image/*">
+          <label for="logoUrl">Logo Image URL (optional)</label>
+          <input type="url" id="logoUrl" name="logoUrl" placeholder="https://example.com/logo.png">
+          <small style="color: var(--text-light)">Paste a link to the sponsor's logo image</small>
         </div>
         <button type="submit" class="btn btn-primary">Add Sponsor</button>
       </form>
