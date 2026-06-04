@@ -1,12 +1,43 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET || 'oshkosh-flyers-jwt-secret-change-me';
 const IS_VERCEL = process.env.VERCEL === '1';
+
+// --- Image uploads ---
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp|svg/;
+    const extOk = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mimeOk = allowed.test(file.mimetype);
+    if (extOk && mimeOk) return cb(null, true);
+    cb(new Error('Only image files are allowed'));
+  }
+});
+
+async function uploadImage(file) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const { put } = require('@vercel/blob');
+    const blob = await put(file.originalname, file.buffer, {
+      access: 'public',
+      contentType: file.mimetype
+    });
+    return blob.url;
+  }
+  const imagesDir = path.join(__dirname, 'public', 'images');
+  if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
+  const filename = Date.now() + path.extname(file.originalname);
+  fs.writeFileSync(path.join(imagesDir, filename), file.buffer);
+  return '/images/' + filename;
+}
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -404,14 +435,18 @@ app.post('/admin/sponsors', requireAdmin, async (req, res) => {
   res.redirect('/admin/sponsors');
 });
 
-app.post('/admin/sponsors/add', requireAdmin, async (req, res) => {
+app.post('/admin/sponsors/add', requireAdmin, upload.single('logo'), async (req, res) => {
   try {
     const sponsors = await readData('sponsors.json');
+    let logoUrl = '';
+    if (req.file) {
+      logoUrl = await uploadImage(req.file);
+    }
     sponsors.sponsors.push({
       id: Date.now().toString(),
       name: req.body.name,
       url: req.body.url || '',
-      logo: req.body.logoUrl || ''
+      logo: logoUrl
     });
     await writeData('sponsors.json', sponsors);
     flash(res, 'success', 'Sponsor added');
@@ -461,6 +496,17 @@ app.post('/admin/password', requireAdmin, async (req, res) => {
     flash(res, 'error', e.message);
   }
   res.redirect('/admin');
+});
+
+// General image upload
+app.post('/admin/upload', requireAdmin, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const url = await uploadImage(req.file);
+    res.json({ url });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Local development server
