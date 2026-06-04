@@ -24,13 +24,19 @@ const upload = multer({
 });
 
 async function uploadImage(file) {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    || Object.keys(process.env).filter(k => k.endsWith('_READ_WRITE_TOKEN')).map(k => process.env[k])[0];
+  if (blobToken) {
     const { put } = require('@vercel/blob');
     const blob = await put(file.originalname, file.buffer, {
       access: 'public',
-      contentType: file.mimetype
+      contentType: file.mimetype,
+      token: blobToken
     });
     return blob.url;
+  }
+  if (IS_VERCEL) {
+    throw new Error('Connect Vercel Blob storage to enable image uploads.');
   }
   const imagesDir = path.join(__dirname, 'public', 'images');
   if (!fs.existsSync(imagesDir)) fs.mkdirSync(imagesDir, { recursive: true });
