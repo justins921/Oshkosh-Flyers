@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET || 'oshkosh-flyers-jwt-secret-change-me';
@@ -43,6 +44,28 @@ async function uploadImage(file) {
   const filename = Date.now() + path.extname(file.originalname);
   fs.writeFileSync(path.join(imagesDir, filename), file.buffer);
   return '/images/' + filename;
+}
+
+// --- Password hashing (Node.js built-in crypto) ---
+
+function hashPassword(password) {
+  return new Promise((resolve, reject) => {
+    const salt = crypto.randomBytes(16).toString('hex');
+    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(salt + ':' + derivedKey.toString('hex'));
+    });
+  });
+}
+
+function verifyPassword(password, hash) {
+  return new Promise((resolve, reject) => {
+    const [salt, key] = hash.split(':');
+    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(key === derivedKey.toString('hex'));
+    });
+  });
 }
 
 app.set('view engine', 'ejs');
@@ -95,6 +118,26 @@ async function writeData(filename, data) {
   throw new Error('Connect Vercel KV to enable content editing on production.');
 }
 
+async function getUsers() {
+  let users = await readData('users.json');
+  if (users && users.users && users.users.length > 0) return users;
+  const admin = await readData('admin.json');
+  const pw = (admin && admin.password) || 'flyersadmin2026';
+  const un = (admin && admin.username) || 'admin';
+  const hash = await hashPassword(pw);
+  users = {
+    users: [{
+      id: '1',
+      username: un,
+      passwordHash: hash,
+      role: 'admin',
+      createdAt: new Date().toISOString()
+    }]
+  };
+  await writeData('users.json', users);
+  return users;
+}
+
 // --- Cookie-based flash messages (replaces connect-flash + express-session) ---
 
 function flash(res, type, message) {
@@ -108,11 +151,15 @@ app.use((req, res, next) => {
   if (req.cookies.flash_error) res.clearCookie('flash_error', { path: '/' });
 
   res.locals.isAdmin = false;
+  res.locals.currentUser = null;
   const token = req.cookies.admin_token;
   if (token) {
     try {
-      jwt.verify(token, JWT_SECRET);
-      res.locals.isAdmin = true;
+      const decoded = jwt.verify(token, JWT_SECRET);
+      res.locals.currentUser = decoded;
+      if (decoded.role === 'admin') {
+        res.locals.isAdmin = true;
+      }
     } catch {}
   }
   next();
@@ -124,7 +171,12 @@ function requireAdmin(req, res, next) {
   const token = req.cookies.admin_token;
   if (!token) return res.redirect('/admin/login');
   try {
-    jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== 'admin') {
+      flash(res, 'error', 'Admin access required');
+      return res.redirect('/admin/login');
+    }
+    req.user = decoded;
     next();
   } catch {
     res.clearCookie('admin_token');
@@ -174,15 +226,28 @@ app.get('/admin/login', async (req, res) => {
 });
 
 app.post('/admin/login', async (req, res) => {
-  const admin = await readData('admin.json');
-  const { username, password } = req.body;
-  if (username === admin.username && password === admin.password) {
-    const token = jwt.sign({ admin: true }, JWT_SECRET, { expiresIn: '2h' });
+  try {
+    const usersData = await getUsers();
+    const { username, password } = req.body;
+    const user = usersData.users.find(u => u.username === username);
+    if (!user || !(await verifyPassword(password, user.passwordHash))) {
+      flash(res, 'error', 'Invalid credentials');
+      return res.redirect('/admin/login');
+    }
+    if (user.role === 'pending') {
+      flash(res, 'error', 'Your account is pending admin approval');
+      return res.redirect('/admin/login');
+    }
+    const token = jwt.sign(
+      { userId: user.id, username: user.username, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
     res.cookie('admin_token', token, { httpOnly: true, maxAge: 7200000, path: '/' });
     flash(res, 'success', 'Welcome back!');
     res.redirect('/admin');
-  } else {
-    flash(res, 'error', 'Invalid credentials');
+  } catch (e) {
+    flash(res, 'error', 'Login failed');
     res.redirect('/admin/login');
   }
 });
@@ -190,6 +255,52 @@ app.post('/admin/login', async (req, res) => {
 app.get('/admin/logout', (req, res) => {
   res.clearCookie('admin_token', { path: '/' });
   res.redirect('/');
+});
+
+// Registration
+app.get('/admin/register', async (req, res) => {
+  const site = await readData('site.json');
+  res.render('admin/register', { site });
+});
+
+app.post('/admin/register', async (req, res) => {
+  try {
+    const { username, password, confirmPassword } = req.body;
+    if (!username || !password) {
+      flash(res, 'error', 'Username and password are required');
+      return res.redirect('/admin/register');
+    }
+    if (password !== confirmPassword) {
+      flash(res, 'error', 'Passwords do not match');
+      return res.redirect('/admin/register');
+    }
+    if (password.length < 6) {
+      flash(res, 'error', 'Password must be at least 6 characters');
+      return res.redirect('/admin/register');
+    }
+    if (username.trim().length < 3) {
+      flash(res, 'error', 'Username must be at least 3 characters');
+      return res.redirect('/admin/register');
+    }
+    const usersData = await getUsers();
+    if (usersData.users.find(u => u.username.toLowerCase() === username.trim().toLowerCase())) {
+      flash(res, 'error', 'Username already taken');
+      return res.redirect('/admin/register');
+    }
+    usersData.users.push({
+      id: Date.now().toString(),
+      username: username.trim(),
+      passwordHash: await hashPassword(password),
+      role: 'pending',
+      createdAt: new Date().toISOString()
+    });
+    await writeData('users.json', usersData);
+    flash(res, 'success', 'Account created! An administrator will review your account.');
+    res.redirect('/admin/login');
+  } catch (e) {
+    flash(res, 'error', e.message);
+    res.redirect('/admin/register');
+  }
 });
 
 app.get('/admin', requireAdmin, async (req, res) => {
@@ -474,6 +585,60 @@ app.post('/admin/sponsors/delete/:id', requireAdmin, async (req, res) => {
   res.redirect('/admin/sponsors');
 });
 
+// User management
+app.get('/admin/users', requireAdmin, async (req, res) => {
+  const [site, usersData] = await Promise.all([readData('site.json'), getUsers()]);
+  res.render('admin/users', { site, users: usersData.users });
+});
+
+app.post('/admin/users/promote/:id', requireAdmin, async (req, res) => {
+  try {
+    const usersData = await getUsers();
+    const user = usersData.users.find(u => u.id === req.params.id);
+    if (user) {
+      user.role = 'admin';
+      await writeData('users.json', usersData);
+      flash(res, 'success', `${user.username} promoted to admin`);
+    }
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/users');
+});
+
+app.post('/admin/users/demote/:id', requireAdmin, async (req, res) => {
+  try {
+    const usersData = await getUsers();
+    const user = usersData.users.find(u => u.id === req.params.id);
+    if (user && user.id !== req.user.userId) {
+      user.role = 'pending';
+      await writeData('users.json', usersData);
+      flash(res, 'success', `${user.username} demoted`);
+    } else if (user && user.id === req.user.userId) {
+      flash(res, 'error', 'Cannot demote yourself');
+    }
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/users');
+});
+
+app.post('/admin/users/delete/:id', requireAdmin, async (req, res) => {
+  try {
+    if (req.params.id === req.user.userId) {
+      flash(res, 'error', 'Cannot delete your own account');
+      return res.redirect('/admin/users');
+    }
+    const usersData = await getUsers();
+    usersData.users = usersData.users.filter(u => u.id !== req.params.id);
+    await writeData('users.json', usersData);
+    flash(res, 'success', 'User deleted');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/users');
+});
+
 // Change password
 app.get('/admin/password', requireAdmin, async (req, res) => {
   const site = await readData('site.json');
@@ -482,8 +647,13 @@ app.get('/admin/password', requireAdmin, async (req, res) => {
 
 app.post('/admin/password', requireAdmin, async (req, res) => {
   try {
-    const admin = await readData('admin.json');
-    if (req.body.currentPassword !== admin.password) {
+    const usersData = await getUsers();
+    const user = usersData.users.find(u => u.id === req.user.userId);
+    if (!user) {
+      flash(res, 'error', 'User not found');
+      return res.redirect('/admin/password');
+    }
+    if (!(await verifyPassword(req.body.currentPassword, user.passwordHash))) {
       flash(res, 'error', 'Current password is incorrect');
       return res.redirect('/admin/password');
     }
@@ -495,8 +665,8 @@ app.post('/admin/password', requireAdmin, async (req, res) => {
       flash(res, 'error', 'Password must be at least 6 characters');
       return res.redirect('/admin/password');
     }
-    admin.password = req.body.newPassword;
-    await writeData('admin.json', admin);
+    user.passwordHash = await hashPassword(req.body.newPassword);
+    await writeData('users.json', usersData);
     flash(res, 'success', 'Password changed successfully');
   } catch (e) {
     flash(res, 'error', e.message);

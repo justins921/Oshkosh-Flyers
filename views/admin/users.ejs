@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Manage Users</h1>
+      <p>Approve new users and manage admin access</p>
+    </div>
+
+    <% var pending = users.filter(function(u) { return u.role === 'pending'; }); %>
+    <% if (pending.length > 0) { %>
+    <div class="admin-card">
+      <h2>Pending Approval (<%= pending.length %>)</h2>
+      <ul class="item-list">
+        <% pending.forEach(function(user) { %>
+          <li>
+            <div class="item-info">
+              <h4><%= user.username %></h4>
+              <p>Registered <%= new Date(user.createdAt).toLocaleDateString() %></p>
+            </div>
+            <div class="item-actions">
+              <form method="POST" action="/admin/users/promote/<%= user.id %>" style="display:inline">
+                <button type="submit" class="btn btn-primary btn-sm">Approve as Admin</button>
+              </form>
+              <form method="POST" action="/admin/users/delete/<%= user.id %>" style="display:inline">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this user?')">Delete</button>
+              </form>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+    <% } %>
+
+    <div class="admin-card">
+      <h2>Administrators</h2>
+      <% var admins = users.filter(function(u) { return u.role === 'admin'; }); %>
+      <% if (admins.length > 0) { %>
+        <ul class="item-list">
+          <% admins.forEach(function(user) { %>
+            <li>
+              <div class="item-info">
+                <h4><%= user.username %></h4>
+                <p>Admin since <%= new Date(user.createdAt).toLocaleDateString() %></p>
+              </div>
+              <div class="item-actions">
+                <form method="POST" action="/admin/users/demote/<%= user.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Demote this admin?')">Demote</button>
+                </form>
+                <form method="POST" action="/admin/users/delete/<%= user.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this user?')">Delete</button>
+                </form>
+              </div>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p style="color: var(--text-light)">No administrators.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
