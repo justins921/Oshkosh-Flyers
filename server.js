@@ -16,7 +16,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|gif|webp|svg/;
+    const allowed = /jpeg|jpg|png|gif|webp/;
     const extOk = allowed.test(path.extname(file.originalname).toLowerCase());
     const mimeOk = allowed.test(file.mimetype);
     if (extOk && mimeOk) return cb(null, true);
@@ -52,7 +52,7 @@ function hashPassword(password) {
   return new Promise((resolve, reject) => {
     const salt = crypto.randomBytes(16).toString('hex');
     crypto.scrypt(password, salt, 64, (err, derivedKey) => {
-      if (err) reject(err);
+      if (err) return reject(err);
       resolve(salt + ':' + derivedKey.toString('hex'));
     });
   });
@@ -61,8 +61,9 @@ function hashPassword(password) {
 function verifyPassword(password, hash) {
   return new Promise((resolve, reject) => {
     const [salt, key] = hash.split(':');
+    if (!salt || !key) return resolve(false);
     crypto.scrypt(password, salt, 64, (err, derivedKey) => {
-      if (err) reject(err);
+      if (err) return reject(err);
       resolve(key === derivedKey.toString('hex'));
     });
   });
@@ -91,6 +92,18 @@ if (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL) {
 
 const DATA_DIR = path.join(__dirname, 'data');
 
+const DATA_DEFAULTS = {
+  'site.json': { teamName: 'Oshkosh Flyers', tagline: 'Youth Football Club', email: '', phone: '', facebook: '', hudl: '', instagram: '', league: '', gradeRange: '', mailingAddress: '', address: '', presidentEmail: '', fundraisingEmail: '' },
+  'home.json': { heroTitle: 'Oshkosh Flyers Football', heroSubtitle: '', mission: '', registrationOpen: false, registrationUrl: '', achievements: '' },
+  'about.json': { history: '', missionStatement: '', values: '', coaches: [] },
+  'announcements.json': { items: [] },
+  'calendar.json': { events: [] },
+  'contact.json': { address: '', mailingAddress: '', email: '', phone: '', boardMembers: [] },
+  'registration.json': { isOpen: false, season: '', registrationUrl: '', description: '', deadline: '', fee: '', ageGroups: '', requirements: '' },
+  'sponsors.json': { headline: 'Thank you to our sponsors!', description: '', becomeASponsor: '', sponsors: [] },
+  'users.json': { users: [] }
+};
+
 async function readData(filename) {
   if (redis) {
     try {
@@ -102,7 +115,7 @@ async function readData(filename) {
   if (fs.existsSync(filepath)) {
     return JSON.parse(fs.readFileSync(filepath, 'utf8'));
   }
-  return null;
+  return DATA_DEFAULTS[filename] || null;
 }
 
 async function writeData(filename, data) {
@@ -243,7 +256,7 @@ app.post('/admin/login', async (req, res) => {
       JWT_SECRET,
       { expiresIn: '2h' }
     );
-    res.cookie('admin_token', token, { httpOnly: true, maxAge: 7200000, path: '/' });
+    res.cookie('admin_token', token, { httpOnly: true, maxAge: 7200000, path: '/', sameSite: 'lax', secure: IS_VERCEL });
     flash(res, 'success', 'Welcome back!');
     res.redirect('/admin');
   } catch (e) {
