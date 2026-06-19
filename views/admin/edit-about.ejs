@@ -9,7 +9,7 @@
     </div>
 
     <div class="admin-card">
-      <form method="POST" action="/admin/about">
+      <form method="POST" action="/admin/about" enctype="multipart/form-data">
         <div class="form-group">
           <label for="history">Organization History</label>
           <textarea id="history" name="history" rows="5"><%= about.history %></textarea>
@@ -42,6 +42,17 @@
                   <label>Bio</label>
                   <textarea name="coachBio" rows="2"><%= coach.bio %></textarea>
                 </div>
+                <div class="form-group">
+                  <label>Photo</label>
+                  <% if (coach.photo) { %>
+                    <div style="margin-bottom: 8px;">
+                      <img src="<%= coach.photo %>" alt="<%= coach.name %>" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gray-200);">
+                      <span style="margin-left: 8px; font-size: 0.85rem; color: var(--text-light);">Current photo</span>
+                    </div>
+                  <% } %>
+                  <input type="hidden" name="coachExistingPhoto" value="<%= coach.photo || '' %>">
+                  <input type="file" name="coachPhoto_<%= i %>" accept="image/jpeg,image/png,image/gif,image/webp">
+                </div>
               </div>
             <% }); %>
           <% } %>
@@ -58,27 +69,33 @@
 </div>
 
 <script>
+var coachIndex = <%= (about.coaches && about.coaches.length) || 0 %>;
 function addCoach() {
-  const list = document.getElementById('coaches-list');
-  const block = document.createElement('div');
+  var list = document.getElementById('coaches-list');
+  var block = document.createElement('div');
   block.className = 'repeater-block';
-  block.innerHTML = `
-    <div class="form-row">
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" name="coachName" value="">
-      </div>
-      <div class="form-group">
-        <label>Role</label>
-        <input type="text" name="coachRole" value="">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Bio</label>
-      <textarea name="coachBio" rows="2"></textarea>
-    </div>
-  `;
+  block.innerHTML =
+    '<div class="form-row">' +
+      '<div class="form-group">' +
+        '<label>Name</label>' +
+        '<input type="text" name="coachName" value="">' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label>Role</label>' +
+        '<input type="text" name="coachRole" value="">' +
+      '</div>' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Bio</label>' +
+      '<textarea name="coachBio" rows="2"></textarea>' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Photo</label>' +
+      '<input type="hidden" name="coachExistingPhoto" value="">' +
+      '<input type="file" name="coachPhoto_' + coachIndex + '" accept="image/jpeg,image/png,image/gif,image/webp">' +
+    '</div>';
   list.appendChild(block);
+  coachIndex++;
 }
 </script>
 

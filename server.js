@@ -380,7 +380,7 @@ app.get('/admin/about', requireAdmin, async (req, res) => {
   res.render('admin/edit-about', { site, about });
 });
 
-app.post('/admin/about', requireAdmin, async (req, res) => {
+app.post('/admin/about', requireAdmin, upload.any(), async (req, res) => {
   try {
     const about = await readData('about.json');
     about.history = req.body.history || about.history;
@@ -391,12 +391,21 @@ app.post('/admin/about', requireAdmin, async (req, res) => {
       const names = Array.isArray(req.body.coachName) ? req.body.coachName : [req.body.coachName];
       const roles = Array.isArray(req.body.coachRole) ? req.body.coachRole : [req.body.coachRole];
       const bios = Array.isArray(req.body.coachBio) ? req.body.coachBio : [req.body.coachBio];
+      const existingPhotos = req.body.coachExistingPhoto
+        ? (Array.isArray(req.body.coachExistingPhoto) ? req.body.coachExistingPhoto : [req.body.coachExistingPhoto])
+        : [];
       for (let i = 0; i < names.length; i++) {
         if (names[i] && names[i].trim()) {
+          let photo = (existingPhotos[i] || '').trim();
+          const file = req.files && req.files.find(f => f.fieldname === 'coachPhoto_' + i);
+          if (file) {
+            photo = await uploadImage(file);
+          }
           about.coaches.push({
             name: names[i].trim(),
             role: (roles[i] || '').trim(),
-            bio: (bios[i] || '').trim()
+            bio: (bios[i] || '').trim(),
+            photo: photo
           });
         }
       }

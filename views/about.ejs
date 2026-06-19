@@ -104,7 +104,11 @@
     <div class="coaches-grid">
       <% about.coaches.forEach(function(coach, i) { %>
         <div class="coach-card reveal" style="transition-delay: <%= i * 0.1 %>s">
-          <div class="coach-avatar"><%= coach.name.charAt(0) %></div>
+          <% if (coach.photo) { %>
+            <img src="<%= coach.photo %>" alt="<%= coach.name %>" class="coach-photo">
+          <% } else { %>
+            <div class="coach-avatar"><%= coach.name.charAt(0) %></div>
+          <% } %>
           <h3><%= coach.name %></h3>
           <% if (coach.role) { %><p class="coach-role"><%= coach.role %></p><% } %>
           <% if (coach.bio) { %><p class="coach-bio"><%= coach.bio %></p><% } %>

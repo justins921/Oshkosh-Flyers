@@ -1347,6 +1347,14 @@ svg {
   margin-bottom: 16px;
   border: 3px solid var(--gold);
 }
+.coach-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  border: 3px solid var(--gold);
+}
 
 .coach-card h3 {
   font-size: 1.1rem;
