@@ -595,6 +595,26 @@ app.post('/admin/sponsors/add', requireAdmin, upload.single('logo'), async (req,
   res.redirect('/admin/sponsors');
 });
 
+app.post('/admin/sponsors/edit/:id', requireAdmin, upload.single('logo'), async (req, res) => {
+  try {
+    const sponsors = await readData('sponsors.json');
+    const sponsor = sponsors.sponsors.find(s => s.id === req.params.id);
+    if (!sponsor) { flash(res, 'error', 'Sponsor not found'); return res.redirect('/admin/sponsors'); }
+    sponsor.name = req.body.name || sponsor.name;
+    sponsor.url = req.body.url || '';
+    if (req.file) {
+      sponsor.logo = await uploadImage(req.file);
+    } else if (req.body.existingLogo) {
+      sponsor.logo = req.body.existingLogo;
+    }
+    await writeData('sponsors.json', sponsors);
+    flash(res, 'success', 'Sponsor updated');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/sponsors');
+});
+
 app.post('/admin/sponsors/delete/:id', requireAdmin, async (req, res) => {
   try {
     const sponsors = await readData('sponsors.json');
