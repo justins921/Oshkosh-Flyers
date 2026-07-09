@@ -448,9 +448,11 @@ svg {
   align-items: center;
 }
 
-.brand-logo svg {
+.brand-logo svg,
+.brand-logo-img {
   width: 40px;
   height: 40px;
+  object-fit: contain;
 }
 
 .brand-text {
@@ -2648,7 +2650,8 @@ svg {
     height: 72px;
   }
 
-  .brand-logo svg {
+  .brand-logo svg,
+  .brand-logo-img {
     width: 46px;
     height: 46px;
   }
