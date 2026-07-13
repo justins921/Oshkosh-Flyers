@@ -46,6 +46,42 @@ async function uploadImage(file) {
   return '/images/' + filename;
 }
 
+// --- Document uploads ---
+
+const docUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv/;
+    const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
+    if (allowed.test(ext)) return cb(null, true);
+    cb(new Error('Only document files are allowed (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, CSV)'));
+  }
+});
+
+async function uploadDocument(file) {
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN
+    || Object.keys(process.env).filter(k => k.endsWith('_READ_WRITE_TOKEN')).map(k => process.env[k])[0];
+  if (blobToken) {
+    const { put } = require('@vercel/blob');
+    const blob = await put(file.originalname, file.buffer, {
+      access: 'public',
+      contentType: file.mimetype,
+      token: blobToken
+    });
+    return blob.url;
+  }
+  if (IS_VERCEL) {
+    throw new Error('Connect Vercel Blob storage to enable file uploads.');
+  }
+  const docsDir = path.join(__dirname, 'public', 'documents');
+  if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
+  const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const filename = Date.now() + '-' + safeName;
+  fs.writeFileSync(path.join(docsDir, filename), file.buffer);
+  return '/documents/' + filename;
+}
+
 // --- Password hashing (Node.js built-in crypto) ---
 
 function hashPassword(password) {
@@ -101,6 +137,7 @@ const DATA_DEFAULTS = {
   'contact.json': { address: '', mailingAddress: '', email: '', phone: '', boardMembers: [] },
   'registration.json': { isOpen: false, season: '', registrationUrl: '', description: '', deadline: '', fee: '', ageGroups: '', requirements: '' },
   'sponsors.json': { headline: 'Thank you to our sponsors!', description: '', becomeASponsor: '', sponsors: [] },
+  'resources.json': { headline: 'Resources', description: '', resources: [] },
   'users.json': { users: [] }
 };
 
@@ -229,6 +266,11 @@ app.get('/registration', async (req, res) => {
 app.get('/sponsors', async (req, res) => {
   const [site, sponsors] = await Promise.all([readData('site.json'), readData('sponsors.json')]);
   res.render('sponsors', { site, sponsors });
+});
+
+app.get('/resources', async (req, res) => {
+  const [site, resources] = await Promise.all([readData('site.json'), readData('resources.json')]);
+  res.render('resources', { site, resources });
 });
 
 // --- Admin routes ---
@@ -625,6 +667,79 @@ app.post('/admin/sponsors/delete/:id', requireAdmin, async (req, res) => {
     flash(res, 'error', e.message);
   }
   res.redirect('/admin/sponsors');
+});
+
+// Resources
+app.get('/admin/resources', requireAdmin, async (req, res) => {
+  const [site, resources] = await Promise.all([readData('site.json'), readData('resources.json')]);
+  res.render('admin/edit-resources', { site, resources });
+});
+
+app.post('/admin/resources', requireAdmin, async (req, res) => {
+  try {
+    const resources = await readData('resources.json');
+    resources.headline = req.body.headline || resources.headline;
+    resources.description = req.body.description || resources.description;
+    await writeData('resources.json', resources);
+    flash(res, 'success', 'Resources page updated');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/resources');
+});
+
+app.post('/admin/resources/add', requireAdmin, docUpload.single('file'), async (req, res) => {
+  try {
+    const resources = await readData('resources.json');
+    if (!req.file) { flash(res, 'error', 'Please select a file to upload'); return res.redirect('/admin/resources'); }
+    const fileUrl = await uploadDocument(req.file);
+    resources.resources.push({
+      id: Date.now().toString(),
+      title: req.body.title || req.file.originalname,
+      description: req.body.description || '',
+      category: req.body.category || 'General',
+      filename: req.file.originalname,
+      url: fileUrl,
+      uploadedAt: new Date().toISOString()
+    });
+    await writeData('resources.json', resources);
+    flash(res, 'success', 'Resource added');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/resources');
+});
+
+app.post('/admin/resources/edit/:id', requireAdmin, docUpload.single('file'), async (req, res) => {
+  try {
+    const resources = await readData('resources.json');
+    const resource = resources.resources.find(r => r.id === req.params.id);
+    if (!resource) { flash(res, 'error', 'Resource not found'); return res.redirect('/admin/resources'); }
+    resource.title = req.body.title || resource.title;
+    resource.description = req.body.description || '';
+    resource.category = req.body.category || resource.category;
+    if (req.file) {
+      resource.url = await uploadDocument(req.file);
+      resource.filename = req.file.originalname;
+    }
+    await writeData('resources.json', resources);
+    flash(res, 'success', 'Resource updated');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/resources');
+});
+
+app.post('/admin/resources/delete/:id', requireAdmin, async (req, res) => {
+  try {
+    const resources = await readData('resources.json');
+    resources.resources = resources.resources.filter(r => r.id !== req.params.id);
+    await writeData('resources.json', resources);
+    flash(res, 'success', 'Resource removed');
+  } catch (e) {
+    flash(res, 'error', e.message);
+  }
+  res.redirect('/admin/resources');
 });
 
 // User management

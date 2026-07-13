@@ -1,0 +1,119 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <%- include('./sidebar') %>
+  <div class="admin-main">
+    <div class="admin-header">
+      <h1>Manage Resources</h1>
+      <p>Upload documents, waivers, and other files for parents and players</p>
+    </div>
+
+    <div class="admin-card">
+      <h2>Page Content</h2>
+      <form method="POST" action="/admin/resources">
+        <div class="form-group">
+          <label for="headline">Headline</label>
+          <input type="text" id="headline" name="headline" value="<%= resources.headline %>">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3"><%= resources.description %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Page Content</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h2>Upload New Resource</h2>
+      <form method="POST" action="/admin/resources/add" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Document Title</label>
+            <input type="text" id="title" name="title" required placeholder="e.g. Player Waiver Form">
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" placeholder="e.g. Waivers, Fundraising, General" list="category-list">
+            <datalist id="category-list">
+              <option value="Waivers">
+              <option value="Fundraising">
+              <option value="Forms">
+              <option value="Schedules">
+              <option value="General">
+            </datalist>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="resourceDesc">Description (optional)</label>
+          <input type="text" id="resourceDesc" name="description" placeholder="Brief description of this document">
+        </div>
+        <div class="form-group">
+          <label for="file">File (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, CSV)</label>
+          <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload Resource</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h2>Current Resources</h2>
+      <% if (resources.resources && resources.resources.length > 0) { %>
+        <ul class="item-list">
+          <% resources.resources.forEach(function(resource) { %>
+            <li>
+              <div class="item-info">
+                <h4><%= resource.title %></h4>
+                <p><%= resource.category %> &middot; <%= resource.filename %></p>
+              </div>
+              <div class="item-actions">
+                <a href="<%= resource.url %>" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">View</a>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit('<%= resource.id %>')">Edit</button>
+                <form method="POST" action="/admin/resources/delete/<%= resource.id %>" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Remove this resource?')">Remove</button>
+                </form>
+              </div>
+            </li>
+            <li id="edit-<%= resource.id %>" style="display: none; padding: 0;">
+              <form method="POST" action="/admin/resources/edit/<%= resource.id %>" enctype="multipart/form-data" style="width: 100%; padding: 16px; background: var(--gray-50, #f9fafb); border-radius: 8px;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Document Title</label>
+                    <input type="text" name="title" value="<%= resource.title %>" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" name="category" value="<%= resource.category %>" list="category-list">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Description (optional)</label>
+                  <input type="text" name="description" value="<%= resource.description || '' %>">
+                </div>
+                <div class="form-group">
+                  <label>Replace File (optional)</label>
+                  <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 4px;">Current: <%= resource.filename %></p>
+                  <input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit('<%= resource.id %>')">Cancel</button>
+                </div>
+              </form>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p style="color: var(--text-light)">No resources uploaded yet.</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleEdit(id) {
+  var el = document.getElementById('edit-' + id);
+  el.style.display = el.style.display === 'none' ? '' : 'none';
+}
+</script>
+
+<%- include('../partials/footer') %>

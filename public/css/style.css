@@ -1943,6 +1943,97 @@ svg {
 }
 
 /* -------------------------------------------
+   RESOURCES
+   ------------------------------------------- */
+.resources-category {
+  margin-top: 40px;
+}
+
+.resources-category-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gold);
+  margin-bottom: 16px;
+}
+
+.resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resource-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.resource-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.resource-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 58, 92, 0.08);
+  border-radius: 10px;
+  color: var(--navy-dark);
+}
+
+.resource-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.resource-info h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-dark);
+  margin-bottom: 2px;
+}
+
+.resource-info p {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  margin-bottom: 2px;
+}
+
+.resource-meta {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resource-download {
+  flex-shrink: 0;
+  color: var(--gold);
+  transition: color var(--transition-fast);
+}
+
+.resource-card:hover .resource-download {
+  color: var(--navy-dark);
+}
+
+/* -------------------------------------------
    FOOTER
    ------------------------------------------- */
 .footer {
